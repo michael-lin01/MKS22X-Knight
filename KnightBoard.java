@@ -15,13 +15,17 @@ public class KnightBoard{
   public boolean solve(int startingRow, int startingCol){
     if(board[0][0]!=0) throw new IllegalStateException();
     if(startingRow<0||startingRow>=board.length||
-       startingCol<0||startingCol>board[0].length) throw new IllegalArgumentException();
+       startingCol<0||startingCol>=board[0].length) throw new IllegalArgumentException();
     return solveH(startingRow,startingCol,0);
   }
 
   private boolean solveH(int row, int col, int level){
-    if(level>board.length*board[0].length) return true;
-    
+    if(level>=board.length*board[0].length) return true;
+    if(row<0 || row>=board.length ||
+       col < 0 || col >= board[row].length || board[row][col]!=0) return false;
+    board[row][col] = level;
+    return solveH(row-2,col-1,level+1) || solveH(row-2,col+1,level+1) || solveH(row-1,col+2,level+1) || solveH(row+1,col+2,level+1)||
+           solveH(row+2,col+1,level+1) || solveH(row+2,col-1,level+1) || solveH(row+1,col-2,level+1) || solveH(row-1,col-2,level+1);
   }
 
   public String toString(){
@@ -37,8 +41,13 @@ public class KnightBoard{
   }
 
   public static void main(String args[]){
+    /*
     KnightBoard b = new KnightBoard(4,4);
     b.board[2][2]=12;
+    System.out.println(b);
+    */
+    KnightBoard b = new KnightBoard(4,4);
+    b.solve(0,0);
     System.out.println(b);
   }
 }
