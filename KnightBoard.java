@@ -1,7 +1,7 @@
 public class KnightBoard{
 
   public int[][] board;
-  private int[][] moves = new int[][]{{-2,-1,1,2},{-2,-1,1,2}};
+  private int[][] moves = new int[][]{{-2,-1},{-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2}};
 
   public KnightBoard(int startingRows, int startingCols){
     if(startingRows<0||startingCols<0) throw new IllegalArgumentException();
@@ -22,9 +22,6 @@ public class KnightBoard{
   }
 
   private boolean removeKnight(int row, int col){
-    if(row<0 || row>=board.length || col < 0 || col >= board[row].length || board[row][col]!=0) {
-      return false;
-    }
     board[row][col]=0;
     return true;
   }
@@ -43,14 +40,13 @@ public class KnightBoard{
       return true;
     }
     for(int i = 0; i < moves.length;i++){
-      for(int n = 0; n < moves.length; n++){
-        if(addKnight(row+moves[0][i],col+moves[1][n],level)){
-          if (solveH(row+moves[0][i],col+moves[1][n],level+1)){
-            return true;
-          }
-          removeKnight(row,col);
+      if(addKnight(row+moves[i][0],col+moves[i][1],level)){
+        if (solveH(row+moves[i][0],col+moves[i][1],level+1)){
+          return true;
         }
+        removeKnight(row+moves[i][0],col+moves[i][1]);
       }
+
     }
     System.out.println(this);
     return false;
@@ -74,8 +70,8 @@ public class KnightBoard{
     b.board[2][2]=12;
     System.out.println(b);
     */
-    KnightBoard b = new KnightBoard(4,4);
-    b.solve(0,0);
+    KnightBoard b = new KnightBoard(5,5);
+    System.out.println(b.solve(4,4));
     System.out.println(b);
   }
 }
