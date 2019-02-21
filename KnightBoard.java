@@ -1,14 +1,34 @@
+import java.util.*;
+
 public class KnightBoard{
 
+  private class Tile implements Comparable<Tile>{
+    public int r,c;
+    public Tile(int r, int c){
+      this.r = r;
+      this.c = c;
+    }
+
+    public int compareTo(Tile other){
+      return boardMoves[r][c]-boardMoves[other.r][other.c];
+    }
+  }
+
   public int[][] board;
+  private int[][] boardMoves;
   private int[][] moves = new int[][]{{-2,-1},{-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2}};
 
   public KnightBoard(int startingRows, int startingCols){
     if(startingRows<0||startingCols<0) throw new IllegalArgumentException();
     board = new int[startingRows][startingCols];
+    boardMoves = new int[startingRows][startingCols];
     for(int r = 0; r < startingRows; r++){
       for(int c = 0; c < startingCols;c++){
         board[r][c]=0;
+        boardMoves[r][c]=0;
+        for(int i = 0; i<moves.length;i++){
+          if(r+moves[i][0]>=0 && r+moves[i][0]<board.length && c+moves[i][1]>=0 && c+moves[i][1] < board.length) boardMoves[r][c]++;
+        }
       }
     }
   }
@@ -18,21 +38,37 @@ public class KnightBoard{
       return false;
     }
     board[row][col] = level;
+    for(int i = 0; i < moves.length;i++){
+      if(isAMove(row+moves[i][0],col+moves[i][1])){
+        boardMoves[row][col] = 0;
+        boardMoves[row+moves[i][0]][col+moves[i][1]]--;
+      }
+    }
     return true;
   }
 
   private boolean removeKnight(int row, int col){
     board[row][col]=0;
+    for(int i = 0; i < moves.length;i++){
+      if(isAMove(row+moves[i][0],col+moves[i][1])&&){
+        boardMoves[row][col]++;
+        boardMoves[row+moves[i][0]][col+moves[i][1]]++;
+      }
+    }
     return true;
   }
 
+  private boolean isAMove(int r, int c){
+    return r>=0&&r<board.length&&c>=0&&c<board[0].length;
+  }
 
   public boolean solve(int startingRow, int startingCol){
     if(board[0][0]!=0) throw new IllegalStateException();
     if(startingRow<0||startingRow>=board.length||
        startingCol<0||startingCol>=board[0].length) throw new IllegalArgumentException();
     addKnight(startingRow, startingCol, 1);
-    return solveH(startingRow,startingCol,2);
+    //return solveH(startingRow,startingCol,2);
+    return solveOpt(startingRow,startingCol,2);
   }
 
   private boolean solveH(int row, int col, int level){
@@ -50,6 +86,29 @@ public class KnightBoard{
 
     }
     //System.out.println(this);
+    return false;
+  }
+
+  public boolean solveOpt(int row, int col, int level){
+    if(level>board.length*board[0].length) {
+      //System.out.println(this);
+      return true;
+    }
+    List<Tile> tiles = new ArrayList<Tile>();
+    for(int i = 0;i < moves.length;i++){
+      Tile t = new Tile(moves[i][0],moves[i][1]);
+      if (isAMove(t.r,t.c)&&boardMoves[t.r][t.c]!=-1) tiles.add(t);
+    }
+    Collections.sort(tiles);
+    for(int i = 0;i < tiles.size();i++){
+      if (addKnight(row+tiles.get(i).r,col+tiles.get(i).c,level)){
+        if(solveOpt(row+tiles.get(i).r,col+tiles.get(i).c,level+1)){
+          return true;
+        }
+        removeKnight(row+tiles.get(i).r,col+tiles.get(i).c);
+      }
+      
+    }
     return false;
   }
 
@@ -88,6 +147,18 @@ public class KnightBoard{
     return ans;
   }
 
+  public String toStringMoves(){
+    String ans = "";
+    for(int r = 0; r < boardMoves.length; r++){
+      for(int c = 0; c < boardMoves[r].length;c++){
+        if(boardMoves[r][c]<10) ans += " "+boardMoves[r][c]+" ";
+        else ans+= boardMoves[r][c]+" ";
+      }
+      ans+="\n";
+    }
+    return ans;
+  }
+
   public static void main(String args[]){
     /*
     KnightBoard b = new KnightBoard(4,4);
@@ -97,7 +168,8 @@ public class KnightBoard{
     KnightBoard b = new KnightBoard(5,5);
     System.out.println(b.solve(0,0));
     System.out.println(b);
-    b = new KnightBoard(5,5);
-    System.out.println(b.count(0,2));
+    System.out.println(b.toStringMoves());
+    //b = new KnightBoard(5,5);
+    //System.out.println(b.count(0,2));
   }
 }
