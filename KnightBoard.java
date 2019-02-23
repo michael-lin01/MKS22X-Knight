@@ -12,6 +12,7 @@ public class KnightBoard{
     public int compareTo(Tile other){
       return boardMoves[r][c]-boardMoves[other.r][other.c];
     }
+
   }
 
   public int[][] board;
@@ -39,7 +40,7 @@ public class KnightBoard{
     }
     board[row][col] = level;
     for(int i = 0; i < moves.length;i++){
-      if(isAMove(row+moves[i][0],col+moves[i][1])){
+      if(isAMove(row+moves[i][0],col+moves[i][1])&&board[row+moves[i][0]][col+moves[i][1]]==0){
         boardMoves[row][col] = 0;
         boardMoves[row+moves[i][0]][col+moves[i][1]]--;
       }
@@ -50,7 +51,7 @@ public class KnightBoard{
   private boolean removeKnight(int row, int col){
     board[row][col]=0;
     for(int i = 0; i < moves.length;i++){
-      if(isAMove(row+moves[i][0],col+moves[i][1])&&){
+      if(isAMove(row+moves[i][0],col+moves[i][1])&&board[row+moves[i][0]][col+moves[i][1]]==0){
         boardMoves[row][col]++;
         boardMoves[row+moves[i][0]][col+moves[i][1]]++;
       }
@@ -91,24 +92,31 @@ public class KnightBoard{
 
   public boolean solveOpt(int row, int col, int level){
     if(level>board.length*board[0].length) {
-      //System.out.println(this);
+      /*
+      System.out.println(this);
+      System.out.println(this.toStringMoves());
+      */
       return true;
     }
     List<Tile> tiles = new ArrayList<Tile>();
     for(int i = 0;i < moves.length;i++){
-      Tile t = new Tile(moves[i][0],moves[i][1]);
-      if (isAMove(t.r,t.c)&&boardMoves[t.r][t.c]!=-1) tiles.add(t);
+      Tile t = new Tile(row+moves[i][0],col+moves[i][1]);
+      if (isAMove(t.r,t.c)&&board[t.r][t.c]==0) tiles.add(t);
     }
     Collections.sort(tiles);
+    
     for(int i = 0;i < tiles.size();i++){
-      if (addKnight(row+tiles.get(i).r,col+tiles.get(i).c,level)){
-        if(solveOpt(row+tiles.get(i).r,col+tiles.get(i).c,level+1)){
+      if (addKnight(tiles.get(i).r,tiles.get(i).c,level)){
+        if(solveOpt(tiles.get(i).r,tiles.get(i).c,level+1)){
           return true;
         }
-        removeKnight(row+tiles.get(i).r,col+tiles.get(i).c);
+        removeKnight(tiles.get(i).r,tiles.get(i).c);
       }
-      
     }
+    /*
+    System.out.println(this);
+    System.out.println(this.toStringMoves());
+    */
     return false;
   }
 
@@ -165,11 +173,30 @@ public class KnightBoard{
     b.board[2][2]=12;
     System.out.println(b);
     */
-    KnightBoard b = new KnightBoard(5,5);
+    
+    KnightBoard b = new KnightBoard(9,11);
+    
+    
     System.out.println(b.solve(0,0));
     System.out.println(b);
     System.out.println(b.toStringMoves());
-    //b = new KnightBoard(5,5);
-    //System.out.println(b.count(0,2));
+    /*
+    
+    KnightBoard b = new KnightBoard(4,4);
+    System.out.println(b);
+    System.out.println(b.toStringMoves());
+    b.addKnight(1,1,1);
+    System.out.println(b);
+    System.out.println(b.toStringMoves());
+    b.addKnight(2,3,2);
+    System.out.println(b);
+    System.out.println(b.toStringMoves());
+    b.removeKnight(1,1);
+    System.out.println(b);
+    System.out.println(b.toStringMoves());
+    b.removeKnight(2,3);
+    System.out.println(b);
+    System.out.println(b.toStringMoves());
+    */
   }
 }
