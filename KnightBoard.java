@@ -20,7 +20,7 @@ public class KnightBoard{
   private int[][] moves = new int[][]{{-2,-1},{-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2}};
 
   public KnightBoard(int startingRows, int startingCols){
-    if(startingRows<0||startingCols<0) throw new IllegalArgumentException();
+    if(startingRows<=0||startingCols<=0) throw new IllegalArgumentException();
     board = new int[startingRows][startingCols];
     boardMoves = new int[startingRows][startingCols];
     for(int r = 0; r < startingRows; r++){
@@ -87,6 +87,7 @@ public class KnightBoard{
 
     }
     //System.out.println(this);
+    removeKnight(row,col);
     return false;
   }
 
@@ -117,6 +118,7 @@ public class KnightBoard{
     System.out.println(this);
     System.out.println(this.toStringMoves());
     */
+    removeKnight(row,col);
     return false;
   }
 
@@ -147,8 +149,11 @@ public class KnightBoard{
     String ans = "";
     for(int r = 0; r < board.length; r++){
       for(int c = 0; c < board[r].length;c++){
-        if(board[r][c]<10) ans += " "+board[r][c]+" ";
-        else ans+= board[r][c]+" ";
+        if(board[r][c]==0) ans+= " _ ";
+        else{
+          if(board[r][c]<10) ans += " "+board[r][c]+" ";
+          else ans+= board[r][c]+" ";
+        }
       }
       ans+="\n";
     }
@@ -174,12 +179,12 @@ public class KnightBoard{
     System.out.println(b);
     */
     
-    KnightBoard b = new KnightBoard(9,11);
+    KnightBoard b = new KnightBoard(3,3);
     
     
     System.out.println(b.solve(0,0));
     System.out.println(b);
-    System.out.println(b.toStringMoves());
+    //System.out.println(b.toStringMoves());
     /*
     
     KnightBoard b = new KnightBoard(4,4);
