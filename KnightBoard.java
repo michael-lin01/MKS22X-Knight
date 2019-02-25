@@ -105,7 +105,7 @@ public class KnightBoard{
       if (isAMove(t.r,t.c)&&board[t.r][t.c]==0) tiles.add(t);
     }
     Collections.sort(tiles);
-    
+
     for(int i = 0;i < tiles.size();i++){
       if (addKnight(tiles.get(i).r,tiles.get(i).c,level)){
         if(solveOpt(tiles.get(i).r,tiles.get(i).c,level+1)){
@@ -122,7 +122,7 @@ public class KnightBoard{
     return false;
   }
 
-  public int count(int startingRow, int startingCol){
+  public int countSolutions(int startingRow, int startingCol){
     if(board[0][0]!=0) throw new IllegalStateException();
     if(startingRow<0||startingRow>=board.length||
        startingCol<0||startingCol>=board[0].length) throw new IllegalArgumentException();
@@ -178,15 +178,15 @@ public class KnightBoard{
     b.board[2][2]=12;
     System.out.println(b);
     */
-    
-    KnightBoard b = new KnightBoard(3,3);
-    
-    
+
+    KnightBoard b = new KnightBoard(5,5);
+
+
     System.out.println(b.solve(0,0));
     System.out.println(b);
     //System.out.println(b.toStringMoves());
     /*
-    
+
     KnightBoard b = new KnightBoard(4,4);
     System.out.println(b);
     System.out.println(b.toStringMoves());
